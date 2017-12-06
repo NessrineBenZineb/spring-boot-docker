@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: proxy-service
+  cloud:
+    enabled: true
+    config:
+      uri: http://ms-sample-config-server:8888
