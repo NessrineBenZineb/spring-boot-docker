@@ -64,7 +64,7 @@ CMD	java -Dfile.encoding=UTF-8 -Djava.security.egd=file:/dev/./urandom -jar /con
 		</plugins>
 ```
  
- - On Compile l'image 
+ - On Compile l'image. 
 ```sh
      mvn package install dockerfile:build 
 ```
@@ -72,16 +72,18 @@ CMD	java -Dfile.encoding=UTF-8 -Djava.security.egd=file:/dev/./urandom -jar /con
 ```sh
   docker images
 ```
+![N|Solid](https://img15.hostingpics.net/pics/644218Capturedecran20171205a21527AM.png)
 
 # Exécuter les conteneurs
   On a deux méthodes :
-  1 - Exécuter séparement chaque contenaire à l'aide des commandes.
-  2 - Créer un fichier docker-compose qui permet de définir et exécuter nos contenaires.
+       - Exécuter séparement chaque conteneur à l'aide des commandes.
+	    &nbsp;
+       - Créer un fichier docker-compose qui permet de définir et exécuter nos conteneurs.
   
   
-  #### 1ére méthode
+   #### 1ére méthode
 
-- On exécute le contenaire de config. Pour ce faire on met le projet dans notre répertoire github.
+- On exécute le conteneur de config. Pour ce faire on met le projet dans notre répertoire github.
  ```sh
 docker run -it -p 8888:8888 \ config-service \              
       --spring.cloud.config.server.git.uri=https://github.com/NessrineBenZineb/spring-boot-docker\
@@ -93,20 +95,20 @@ CONFIG_CONTAINER_ID=`docker ps -a | grep config-service | cut -d " " -f1`
 CONFIG_IP_ADDRESS=`docker inspect -f "{{ .NetworkSettings.IPAddress }}" $CONFIG_CONTAINER_ID`
 ```
     
- - On lance discovery-service 
+ - On lance discovery-service. 
 ```sh
 docker run -it -p 8761:8761 discovery-service \ -e --spring.cloud.config.uri=http://$CONFIG_IP_ADDRESS:8888
 ```
- - On lance proxy-service
+ - On lance proxy-service.
 ```sh
 docker run -it -p 9999:9999 proxy-service
 ```
- - On lance product-service 
+ - On lance product-service. 
 ```sh
 docker run -it -p 8080:8080 product-service -e --spring.cloud.config.uri=http://$CONFIG_IP_ADDRESS:8888
 ```
 
-On ajoute un fichier bootstrap.yml dans chaque service.
+ - On ajoute un fichier bootstrap.yml dans chaque service.
 
 
 ```sh
@@ -120,7 +122,7 @@ spring:
         maxInterval: 5000
         maxAttempts: 20
 ```
-####  2éme méthode
+   ####  2éme méthode
 
  - On crée le fichier docker-compose.
 
@@ -163,14 +165,16 @@ networks:
     my-network:
        driver: bridge
 ```
-Au niveau desquels on definit:  
-	- Nos services web déja définis dans notre répertoire.   
-	- Un réseau "my-network" de type **Bridge** pour notre application. 
+ - On definit:  
+	- Nos services web déja définis dans notre répertoire. 
+ &nbsp;	
+	- Un réseau "my-network" de type **Bridge** pour notre application.
+ &nbsp;	
 	- La dépendance des services au service "config-service".
 	
  - On ajoute le fichier application.yml dans le projet config et le fichier bootstrap.yml dans les autres services.
 		
- - On exécute ses commandes:
+ - On exécute ces commandes:
 ```sh
   docker-compose build
   docker-compose up
